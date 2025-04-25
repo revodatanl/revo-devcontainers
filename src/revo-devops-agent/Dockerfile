@@ -6,10 +6,19 @@ LABEL maintainer="Thomas Brouwer <thomas.brouwer@revodata.nl>" \
       version="1.0" \
       org.opencontainers.image.source=https://github.com/revodatanl/revo-devcontainers
 
-
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Etc/UTC
+
+# Install system packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    make \
+    nano \
+    ssh \
+    tree \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory
 WORKDIR /workspace/

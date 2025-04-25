@@ -6,9 +6,9 @@
 .DEFAULT_GOAL := all
 
 # Default values
-CONTAINER ?= revo-devcontainer-databricksruntime
+# CONTAINER ?= revo-devcontainer-databricksruntime
 # CONTAINER ?= revo-devcontainer-slim
-# CONTAINER ?= revo-devops-agent
+CONTAINER ?= revo-devops-agent
 
 TAG ?= 15.4-LTS
 REGISTRY ?= ghcr.io/revodatanl
