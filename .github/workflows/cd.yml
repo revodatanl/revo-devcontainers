@@ -1,4 +1,4 @@
-name: Build and Push Docker Images
+name: CD
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-push-images:
+  cd:
     name: Build and Push ${{ matrix.image.name }}
     runs-on: ubuntu-latest
 
