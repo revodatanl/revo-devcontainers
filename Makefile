@@ -6,12 +6,12 @@
 .DEFAULT_GOAL := all
 
 # Default values
-# CONTAINER ?= revo-devcontainer-databricksruntime
-CONTAINER ?= revo-devcontainer-slim
+CONTAINER ?= revo-devcontainer-databricksruntime
+# CONTAINER ?= revo-devcontainer-slim
 # CONTAINER ?= revo-devops-agent
 
 TAG ?= 15.4-LTS
-REGISTRY ?= <GHCR_REGISTRY_NAME>
+REGISTRY ?= ghcr.io/revodatanl
 NO_CACHE ?= false
 
 # Build args
@@ -24,9 +24,6 @@ endif
 IMAGE_NAME = $(CONTAINER)
 FULL_IMAGE = $(IMAGE_NAME):$(TAG)
 REGISTRY_IMAGE = $(REGISTRY)/$(IMAGE_NAME):$(TAG)
-
-# Extract registry name without domain/path for Azure login
-REGISTRY_NAME = $(shell echo $(REGISTRY) | cut -d '.' -f 1)
 CONTAINER_DIR = src/$(CONTAINER)
 DOCKERFILE_PATH = $(CONTAINER_DIR)/Dockerfile
 
@@ -50,8 +47,8 @@ tree:
 	@tree -I '.venv|__pycache__|archive|scratch|.databricks|.ruff_cache|.mypy_cache|.pytest_cache|.git|htmlcov|site|dist|.DS_Store|fixtures' -a
 
 login:
-	@echo "Logging in to Azure Container Registry $(REGISTRY_NAME)..."
-	<login to GHCR>
+	@echo "Logging in to GitHub Container Registry..."
+	@echo $$CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
 
 build:
 	@echo "Building Docker image: $(FULL_IMAGE) from $(DOCKERFILE_PATH)"

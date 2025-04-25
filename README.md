@@ -1,6 +1,6 @@
 # RevoData Development Containers
 
-> *Streamlined development in RevoData projects*
+> *Streamlined development in RevoData containers*
 
 [![python](https://img.shields.io/badge/python-3.11-g)](https://www.python.org)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
@@ -14,18 +14,19 @@ This repository, generated from the [RevoData Asset Bundle Template](https://git
 
 ## 🛠️ Available Development Environments
 
-### 1. Simple Python Environment
+### 1. Simple Python Environment: `revo-devcontainer-slim`
 
 A lightweight Python development container with:
 
 - **Python 3.11**
 - **uv**
+- **Poetry**
 - **Pre-commit hooks**
 - **Essential tools** - `git`, `make`, `nano`, and `tree`
 
 Perfect for general Python development and smaller projects.
 
-### 2. Databricks Runtime Environment
+### 2. Databricks Runtime Environment: `revo-devcontainer-databricksruntime`
 
 A more advanced container based on the Databricks Runtime (15.4 LTS) that includes:
 
@@ -33,10 +34,23 @@ A more advanced container based on the Databricks Runtime (15.4 LTS) that includ
 - **Databricks CLI**
 - **Python 3.11**
 - **uv**
+- **Poetry**
 - **Pre-commit hooks**
 - **Essential tools** - `git`, `make`, `nano`, and `tree`
 
 Ideal for Databricks development, data science, and machine learning projects.
+
+### 3. DevOps Agent Environment: `revo-devops-agent`
+
+A container based on the DevOps Agent that includes:
+
+- **DevOps Agent** based on `Ubuntu 24.04`
+- **Python 3.12**
+- **uv**
+- **Poetry**
+- **Essential tools** - `git`, `make`, `nano`, and `tree`
+
+This container is still being developed.
 
 ## 🚀 Getting Started
 
@@ -47,7 +61,6 @@ Before you begin, ensure you have:
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 - [Visual Studio Code](https://code.visualstudio.com/)
 - [VS Code Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-- [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/get-started-with-azure-cli) - for authentication to container registry
 
 ### 🛠️ Container Maintenance
 
@@ -55,20 +68,10 @@ To update or customize the development containers:
 
 1. Modify the Dockerfile in the respective environment directory in the `src` folder
 2. Build and test your changes locally
-3. If publishing to a registry, build and tag the new image:
-
-   ```bash
-   # For the simple environment
-   docker build --file .devcontainers/simple/Dockerfile --tag cowmanagercr.azurecr.io/cm-devcontainer-slim:<TAG> .
-
-   # For the Databricks environment
-   docker build --file .devcontainers/databricks/Dockerfile --tag cowmanagercr.azurecr.io/cm-devcontainer-databricksruntime:<TAG> .
-   ```
-
-   Or you could use the `Makefile` to build, tag and push the new image:
+3. If publishing to a registry; build, tag, and push the new image by running:
 
    ```bash
    make CONTAINER=<container-name> TAG=<tag>
    ```
 
-   However, this probably requires that you already are working in a DevContainer. _Containerception._
+This command requires that you have configured the `CR_PAT` environment variable, and have `make` installed - but you probably do.
