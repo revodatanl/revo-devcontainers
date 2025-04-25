@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/revodatanl/revo-devcontainers/compare/v1.0.1...v1.0.2) (2025-04-25)
+
+
+### Bug Fixes
+
+* **devcontainer-slim:** include curl in the system packages ([5d8d391](https://github.com/revodatanl/revo-devcontainers/commit/5d8d39197762d6a7fa14b87bd53541ee0e3f541d))
+
 ## [1.0.1](https://github.com/revodatanl/revo-devcontainers/compare/v1.0.0...v1.0.1) (2025-04-25)
 
 
