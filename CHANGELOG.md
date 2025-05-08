@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/revodatanl/revo-devcontainers/compare/v1.0.2...v1.0.3) (2025-05-08)
+
+
+### Bug Fixes
+
+* update entrypoint output and environment variables in devcontainer ([2b3cb01](https://github.com/revodatanl/revo-devcontainers/commit/2b3cb016d0e4edb00f4591cf55015c0cf7a43b3f))
+
 ## [1.0.2](https://github.com/revodatanl/revo-devcontainers/compare/v1.0.1...v1.0.2) (2025-04-25)
 
 
