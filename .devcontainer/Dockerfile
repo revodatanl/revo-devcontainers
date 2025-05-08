@@ -2,7 +2,10 @@
 FROM ghcr.io/revodatanl/databricksruntime-development-container:latest
 
 # Set environment variables
-ENV EDITOR=nano
+ENV PATH="/databricks/python3/bin:$PATH" \
+    EDITOR=nano \
+    UV_PROJECT_ENVIRONMENT="/databricks/python3" \
+    UV_SYSTEM_PYTHON=true
 
 # Set the working directory
 WORKDIR /workspace/
