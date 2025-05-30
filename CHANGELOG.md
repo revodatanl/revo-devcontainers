@@ -1,3 +1,16 @@
+# [1.1.0](https://github.com/revodatanl/revo-devcontainers/compare/v1.0.3...v1.1.0) (2025-05-30)
+
+
+### Bug Fixes
+
+* enhance CI testing with detailed container checks and outputs ([44264c9](https://github.com/revodatanl/revo-devcontainers/commit/44264c996c056922344786dbc955d2eb5e4a9aea))
+* separate CI and CD workflows ([3fe3d04](https://github.com/revodatanl/revo-devcontainers/commit/3fe3d04d37221314a014bb61c1564a323f7c46df))
+
+
+### Features
+
+* add CI pipeline ([a06da39](https://github.com/revodatanl/revo-devcontainers/commit/a06da399c7250c923d9961a92595c6f611cb8c08))
+
 ## [1.0.3](https://github.com/revodatanl/revo-devcontainers/compare/v1.0.2...v1.0.3) (2025-05-08)
 
 
