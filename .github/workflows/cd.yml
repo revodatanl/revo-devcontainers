@@ -27,7 +27,7 @@ jobs:
 
           - name: revo-devcontainer-slim
             dockerfile: ./src/revo-devcontainer-slim/Dockerfile
-            tag: "15.4-LTS"
+            tag: "3.11.11"
             context: ./src/revo-devcontainer-slim
 
     permissions:
@@ -42,8 +42,6 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          # ${{ github.actor }} is the username of the user/actor that initiated the workflow
-          # ${{ secrets.GITHUB_TOKEN }} is an automatically generated token scoped to the repository
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
