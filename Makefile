@@ -1,16 +1,17 @@
-# Root Makefile for Docker Container Management
-# Usage: make CONTAINER=container-name TAG=version
-
-.PHONY: help build tag push container tree shell login list success
+.PHONY: help tree login build tag push all shell success
 
 .DEFAULT_GOAL := all
 
 # Default values
-# CONTAINER ?= revo-devcontainer-databricksruntime
-# CONTAINER ?= revo-devcontainer-slim
 CONTAINER ?= revo-devops-agent
+# CONTAINER ?= revo-devcontainer-slim
+# CONTAINER ?= revo-devcontainer-databricksruntime
 
-TAG ?= 15.4-LTS
+TAG ?= 24.04
+# TAG ?= 3.11.11-slim
+# TAG ?= 15.4-LTS
+# TAG ?= 16.4-LTS
+
 REGISTRY ?= ghcr.io/revodatanl
 NO_CACHE ?= false
 

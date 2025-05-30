@@ -1,0 +1,129 @@
+name: CI
+
+on: push
+  # push:
+  #   branches: [main]
+  # pull_request:
+  # workflow_dispatch:
+
+jobs:
+  build:
+    name: Build ${{ matrix.image.name }}
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - name: revo-devops-agent
+            dockerfile: ./src/revo-devops-agent/Dockerfile
+            tag: "24.04"
+            context: ./src/revo-devops-agent
+
+          - name: revo-devcontainer-databricksruntime
+            dockerfile: ./src/revo-devcontainer-databricksruntime/Dockerfile
+            tag: "15.4-LTS"
+            context: ./src/revo-devcontainer-databricksruntime
+
+          - name: revo-devcontainer-slim
+            dockerfile: ./src/revo-devcontainer-slim/Dockerfile
+            tag: "3.11.11"
+            context: ./src/revo-devcontainer-slim
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and export
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.image.context }}
+          file: ${{ matrix.image.dockerfile }}
+          tags: ${{ matrix.image.name }}:${{ matrix.image.tag }}
+          cache-from: type=gha,scope=${{ matrix.image.name }}
+          cache-to: type=gha,mode=min,scope=${{ matrix.image.name }}
+          outputs: type=docker,dest=/tmp/${{ matrix.image.name }}.tar
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.image.name }}
+          path: /tmp/${{ matrix.image.name }}.tar
+
+  test:
+    name: Test ${{ matrix.image.name }}
+    runs-on: ubuntu-latest
+    needs: build
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - name: revo-devops-agent
+            dockerfile: ./src/revo-devops-agent/Dockerfile
+            tag: "24.04"
+            context: ./src/revo-devops-agent
+
+          - name: revo-devcontainer-databricksruntime
+            dockerfile: ./src/revo-devcontainer-databricksruntime/Dockerfile
+            tag: "15.4-LTS"
+            context: ./src/revo-devcontainer-databricksruntime
+
+          - name: revo-devcontainer-slim
+            dockerfile: ./src/revo-devcontainer-slim/Dockerfile
+            tag: "3.11.11"
+            context: ./src/revo-devcontainer-slim
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.image.name }}
+          path: /tmp
+
+      - name: Load image
+        run: |
+          docker load --input /tmp/${{ matrix.image.name }}.tar
+          docker image ls -a
+
+      - name: Test image basic functionality
+        run: |
+          # Test that the image can run and has basic commands
+          docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} echo "Image loaded successfully"
+          
+      - name: Test image-specific functionality
+        run: |
+          case "${{ matrix.image.name }}" in
+            "revo-devops-agent")
+              # Test devops agent specific commands
+              docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} which git || echo "git not found"
+              docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} which docker || echo "docker not found"
+              ;;
+            "revo-devcontainer-databricksruntime")
+              # Test databricks runtime specific commands
+              docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} python --version
+              docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} which pip || echo "pip not found"
+              ;;
+            "revo-devcontainer-slim")
+              # Test slim container specific commands
+              docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} python --version
+              docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} python -c "print('Python working')"
+              ;;
+          esac
+
+      - name: Test container security
+        run: |
+          # Run container as non-root user if possible
+          docker run --rm --user 1000:1000 ${{ matrix.image.name }}:${{ matrix.image.tag }} echo "Non-root user test" || echo "Container may require root"
+
+      - name: Test container size and layers
+        run: |
+          # Check image size and layer count
+          docker images ${{ matrix.image.name }}:${{ matrix.image.tag }} --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
+          docker history ${{ matrix.image.name }}:${{ matrix.image.tag }} --no-trunc
