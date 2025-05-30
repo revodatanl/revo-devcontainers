@@ -57,3 +57,9 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }}:${{ matrix.image.tag }}
             ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }}:latest
+            
+      - name: Deploy summary
+        run: |
+          echo "🚀 Successfully deployed:"
+          echo "  📦 ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }}:${{ matrix.image.tag }}"
+          echo "  📦 ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }}:latest"
