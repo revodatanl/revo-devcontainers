@@ -34,10 +34,6 @@ RUN sh /uv-installer.sh && rm /uv-installer.sh \
 RUN curl -sSL https://install.python-poetry.org | python3 - \
     && ln -s /root/.local/bin/poetry /usr/local/bin/poetry
 
-# Install project dependenciesx
-COPY pyproject.toml /workspace/
-RUN uv sync --inexact --all-groups
-
 ## ------------------------------- Production Stage ------------------------------ ##
 FROM databricksruntime/standard:15.4-LTS AS production
 
@@ -71,9 +67,6 @@ COPY --from=builder /usr/local/bin/uv /usr/local/bin/uv
 COPY --from=builder /usr/local/bin/uvx /usr/local/bin/uvx
 COPY --from=builder /usr/local/bin/poetry /usr/local/bin/poetry
 COPY --from=builder /root/.local/share/pypoetry/ /root/.local/share/pypoetry/
-
-# Copy installed Python site-packages
-COPY --from=builder /databricks/python3/lib/python3.11/site-packages /databricks/python3/lib/python3.11/site-packages
 
 # Keep the contianer running
 CMD ["tail", "-f", "/dev/null"]
