@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/revodatanl/revo-devcontainers/compare/v1.1.0...v1.2.0) (2025-06-16)
+
+
+### Features
+
+* **databricks-connect:** remove pyspark from the environment in favor of Databricks Connect ([6743bb1](https://github.com/revodatanl/revo-devcontainers/commit/6743bb15c35a26ee1d9ec79d2833fc0e5a79df6a))
+
 # [1.1.0](https://github.com/revodatanl/revo-devcontainers/compare/v1.0.3...v1.1.0) (2025-05-30)
 
 
