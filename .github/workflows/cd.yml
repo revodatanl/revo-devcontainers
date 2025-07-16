@@ -15,20 +15,35 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - name: revo-devops-agent
-            dockerfile: ./src/revo-devops-agent/Dockerfile
-            tag: "24.04"
-            context: ./src/revo-devops-agent
-
-          - name: revo-devcontainer-databricksruntime
-            dockerfile: ./src/revo-devcontainer-databricksruntime/Dockerfile
-            tag: "15.4-LTS"
-            context: ./src/revo-devcontainer-databricksruntime
+          - name: revo-devcontainer-databricks
+            dockerfile: ./src/revo-devcontainer-databricks/Dockerfile
+            tag: 15.4-LTS
+            context: ./src/revo-devcontainer-databricks
+            python_version: 3.11.11
+            databricks_version: 15.4-LTS
+            platforms: linux/amd64,linux/arm64
+          - name: revo-devcontainer-databricks
+            dockerfile: ./src/revo-devcontainer-databricks/Dockerfile
+            tag: 16.4-LTS
+            additional_tags: latest
+            context: ./src/revo-devcontainer-databricks
+            python_version: 3.12.4
+            databricks_version: 16.4-LTS
+            platforms: linux/amd64,linux/arm64
 
           - name: revo-devcontainer-slim
             dockerfile: ./src/revo-devcontainer-slim/Dockerfile
-            tag: "3.11.11"
+            tag: 3.11.11-slim
             context: ./src/revo-devcontainer-slim
+            python_version: 3.11.11
+            platforms: linux/amd64,linux/arm64
+          - name: revo-devcontainer-slim
+            dockerfile: ./src/revo-devcontainer-slim/Dockerfile
+            tag: 3.12.4-slim
+            additional_tags: latest
+            context: ./src/revo-devcontainer-slim
+            python_version: 3.12.4
+            platforms: linux/amd64,linux/arm64
 
     permissions:
       contents: read
@@ -53,13 +68,30 @@ jobs:
         with:
           context: ${{ matrix.image.context }}
           file: ${{ matrix.image.dockerfile }}
+          platforms: ${{ matrix.image.platforms }}
           push: true
+          build-args: |
+            PYTHON_VERSION=${{ matrix.image.python_version }}
+            DATABRICKS_VERSION=${{ matrix.image.databricks_version }}
+            UBUNTU_VERSION=${{ matrix.image.ubuntu_version }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }}:${{ matrix.image.tag }}
-            ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }}:latest
+            ${{ matrix.image.additional_tags && format('ghcr.io/{0}/{1}:{2}', github.repository_owner, matrix.image.name, matrix.image.additional_tags) || '' }}
+          cache-from: type=gha,scope=${{ matrix.image.name }}-${{ matrix.image.tag }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.image.name }}-${{ matrix.image.tag }}
             
       - name: Deploy summary
         run: |
           echo "🚀 Successfully deployed:"
           echo "  📦 ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }}:${{ matrix.image.tag }}"
-          echo "  📦 ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }}:latest"
+          if [[ -n "${{ matrix.image.additional_tags }}" ]]; then
+            echo "  📦 ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }}:${{ matrix.image.additional_tags }}"
+          fi
+          echo "  🏗️  Built for platforms: ${{ matrix.image.platforms }}"
+          echo "  🐍 Python version: ${{ matrix.image.python_version }}"
+          if [[ -n "${{ matrix.image.databricks_version }}" ]]; then
+            echo "  🧱 Databricks version: ${{ matrix.image.databricks_version }}"
+          fi
+          if [[ -n "${{ matrix.image.ubuntu_version }}" ]]; then
+            echo "  🐧 Ubuntu version: ${{ matrix.image.ubuntu_version }}"
+          fi

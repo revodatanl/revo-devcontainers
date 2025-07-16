@@ -10,7 +10,7 @@ This repository provides standardized development containers for RevoData projec
    - Python 3.11.11-slim variant
    - Python 3.12.4-slim variant (tagged as `latest`)
    
-2. **revo-devcontainer-databricksruntime** - Databricks Runtime based environment with enhanced shell
+2. **revo-devcontainer-databricks** - Databricks Runtime based environment with enhanced shell
    - 15.4-LTS variant (Python 3.11.11)
    - 16.4-LTS variant (Python 3.12.4) - tagged as `latest`
    - Enhanced with zsh, powerline10k, fzf, and mcfly for better development experience
@@ -46,7 +46,7 @@ make shell CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS
   - `3.11.11-slim` (Python 3.11.11)
   - `3.12.4-slim` (Python 3.12.4) - also tagged as `latest`
   
-- **revo-devcontainer-databricksruntime**
+- **revo-devcontainer-databricks**
   - `15.4-LTS` (Python 3.11.11, Databricks Runtime 15.4-LTS)
   - `16.4-LTS` (Python 3.12.4, Databricks Runtime 16.4-LTS) - also tagged as `latest`
 
@@ -93,8 +93,8 @@ The project uses GitHub Actions with three workflows:
 
 - Builds all container variants in parallel with multi-architecture support
 - Matrix strategy builds 4 variants:
-  - revo-devcontainer-databricksruntime:15.4-LTS
-  - revo-devcontainer-databricksruntime:16.4-LTS
+  - revo-devcontainer-databricks:15.4-LTS
+  - revo-devcontainer-databricks:16.4-LTS
   - revo-devcontainer-slim:3.11.11-slim
   - revo-devcontainer-slim:3.12.4-slim
 - Runs comprehensive tests including:
