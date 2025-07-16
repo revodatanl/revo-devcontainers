@@ -26,7 +26,7 @@ A lightweight Python development container with:
 
 Perfect for general Python development and smaller projects.
 
-### 2. Databricks Runtime Environment: `revo-devcontainer-databricksruntime`
+### 2. Databricks Runtime Environment: `revo-devcontainer-databricks`
 
 A more advanced container based on the Databricks Runtime (15.4 LTS) that includes:
 
