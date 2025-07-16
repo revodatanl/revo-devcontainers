@@ -2,7 +2,7 @@
 
 > *Streamlined development in RevoData containers*
 
-[![python](https://img.shields.io/badge/python-3.11-g)](https://www.python.org)
+[![python](https://img.shields.io/badge/python-3.11%20%7C%203.12-g)](https://www.python.org)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
@@ -10,33 +10,32 @@
 [![pydocstyle](https://img.shields.io/badge/pydocstyle-enabled-AD4CD3)](http://www.pydocstyle.org/en/stable/)
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-This repository, generated from the [RevoData Asset Bundle Template](https://github.com/revodatanl/revo-asset-bundle-templates) version `0.11.1`, provides standardized, ready-to-use development containers for all RevoData projects with multiple environment options.
+This repository provides standardized, ready-to-use development containers for all RevoData projects with **multi-architecture support** (AMD64 and ARM64) and **parameterized builds** for different versions.
 
 ## 🛠️ Available Development Environments
 
 ### 1. Simple Python Environment: `revo-devcontainer-slim`
 
-A lightweight Python development container with:
+A lightweight Python development container with multiple variants:
 
-- **Python 3.11**
-- **uv**
-- **Poetry**
-- **Pre-commit hooks**
+- **Python 3.11.11-slim** variant
+- **Python 3.12.4-slim** variant (tagged as `latest`)
+- **uv** package manager
 - **Essential tools** - `git`, `make`, `nano`, and `tree`
 
 Perfect for general Python development and smaller projects.
 
 ### 2. Databricks Runtime Environment: `revo-devcontainer-databricks`
 
-A more advanced container based on the Databricks Runtime (15.4 LTS) that includes:
+A more advanced container based on Databricks Runtime with enhanced shell experience:
 
-- **Databricks Runtime 15.4 LTS**
+- **15.4-LTS** variant (Python 3.11.11, Databricks Runtime 15.4-LTS)
+- **16.4-LTS** variant (Python 3.12.4, Databricks Runtime 16.4-LTS) - tagged as `latest`
 - **Databricks CLI**
-- **Python 3.11**
-- **uv**
-- **Poetry**
-- **Pre-commit hooks**
-- **Essential tools** - `git`, `make`, `nano`, and `tree`
+- **uv** package manager
+- **Enhanced shell** - zsh with powerline10k, fzf, mcfly
+- **Essential tools** - `git`, `make`, `nano`, `tree`, `jq`, `curl`, `wget`
+- **Persistent command history** in `/commandhistory/.zsh_history`
 
 Ideal for Databricks development, data science, and machine learning projects.
 
@@ -50,16 +49,63 @@ Before you begin, ensure you have:
 - [Visual Studio Code](https://code.visualstudio.com/)
 - [VS Code Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
-### 🛠️ Container Maintenance
+## 🚀 Multi-Architecture Support
 
-To update or customize the development containers:
+All containers are built for both `linux/amd64` and `linux/arm64` architectures, ensuring compatibility with:
 
-1. Modify the Dockerfile in the respective environment directory in the `src` folder
-2. Build and test your changes locally
-3. If publishing to a registry; build, tag, and push the new image by running:
+- Intel/AMD processors (x86_64)
+- Apple Silicon (M1/M2/M3) processors
+- ARM64 servers
+
+## 🛠️ Container Maintenance
+
+### Available Containers and Variants
+
+- **revo-devcontainer-slim**
+  - `3.11.11-slim` (Python 3.11.11)
+  - `3.12.4-slim` (Python 3.12.4) - also tagged as `latest`
+  
+- **revo-devcontainer-databricks**
+  - `15.4-LTS` (Python 3.11.11, Databricks Runtime 15.4-LTS)
+  - `16.4-LTS` (Python 3.12.4, Databricks Runtime 16.4-LTS) - also tagged as `latest`
+
+### Core Build Commands
+
+```bash
+# Build specific container variants with parameters
+make build CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4 DATABRICKS_VERSION=16.4-LTS
+make build CONTAINER=revo-devcontainer-slim TAG=3.12.4-slim PYTHON_VERSION=3.12.4
+
+# Build, tag and push (requires CR_PAT environment variable)
+make all CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4 DATABRICKS_VERSION=16.4-LTS
+
+# Build for single architecture (default is multi-arch)
+make build MULTI_ARCH=false CONTAINER=revo-devcontainer-slim TAG=3.11.11-slim
+
+# Login to GitHub Container Registry
+make login
+
+# Open shell in running container
+make shell CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS
+```
+
+### Development Workflow
+
+1. Modify Dockerfiles in respective `src/` directories
+2. Test locally using parameterized builds
+3. Run comprehensive tests using the provided test scripts:
 
    ```bash
-   make CONTAINER=<container-name> TAG=<tag>
+   .github/scripts/test-databricks-container.sh revo-devcontainer-databricks 16.4-LTS
+   .github/scripts/test-slim-container.sh revo-devcontainer-slim 3.12.4-slim
    ```
 
-This command requires that you have configured the `CR_PAT` environment variable, and have `make` installed - but you probably do.
+4. CI automatically tests all container variants on pull requests
+5. After merge to main, semantic-release handles versioning
+6. CD workflow publishes all variants to `ghcr.io/revodatanl` with multi-architecture support
+
+### Registry Information
+
+- **Registry**: `ghcr.io/revodatanl`
+- **Authentication**: Requires `CR_PAT` environment variable for push operations
+- **Latest tags**: `16.4-LTS` (Databricks) and `3.12.4-slim` (Slim) are tagged as `latest`

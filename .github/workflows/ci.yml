@@ -59,7 +59,6 @@ jobs:
           build-args: |
             PYTHON_VERSION=${{ matrix.image.python_version }}
             DATABRICKS_VERSION=${{ matrix.image.databricks_version }}
-            UBUNTU_VERSION=${{ matrix.image.ubuntu_version }}
           tags: ${{ matrix.image.name }}:${{ matrix.image.tag }}
           cache-from: type=gha,scope=${{ matrix.image.name }}-${{ matrix.image.tag }}
           cache-to: type=gha,mode=max,scope=${{ matrix.image.name }}-${{ matrix.image.tag }}

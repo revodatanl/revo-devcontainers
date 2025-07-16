@@ -145,6 +145,3 @@ else
     echo "🚨 Container testing failed - please review the errors above"
     exit 1
 fi
-
-echo "=========================================="
-echo "✅ All tests passed successfully!"
