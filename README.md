@@ -40,18 +40,6 @@ A more advanced container based on the Databricks Runtime (15.4 LTS) that includ
 
 Ideal for Databricks development, data science, and machine learning projects.
 
-### 3. DevOps Agent Environment: `revo-devops-agent`
-
-A container based on the DevOps Agent that includes:
-
-- **DevOps Agent** based on `Ubuntu 24.04`
-- **Python 3.12**
-- **uv**
-- **Poetry**
-- **Essential tools** - `git`, `make`, `nano`, and `tree`
-
-This container is still being developed.
-
 ## 🚀 Getting Started
 
 ### Prerequisites
