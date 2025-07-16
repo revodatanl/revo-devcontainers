@@ -1,3 +1,11 @@
+# [1.3.0](https://github.com/revodatanl/revo-devcontainers/compare/v1.2.0...v1.3.0) (2025-07-16)
+
+
+### Features
+
+* add comprehensive testing scripts for Databricks and slim containers in CI workflow ([39a88f3](https://github.com/revodatanl/revo-devcontainers/commit/39a88f3f978dc9a497958996d86962c56cf2dedc))
+* rebuild DevContainers on to of a slim python image ([d7e5f8d](https://github.com/revodatanl/revo-devcontainers/commit/d7e5f8db040204ab8b0950de896890093759fe01))
+
 # [1.2.0](https://github.com/revodatanl/revo-devcontainers/compare/v1.1.0...v1.2.0) (2025-06-16)
 
 
