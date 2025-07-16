@@ -30,7 +30,6 @@ jobs:
             python_version: 3.12.4
             databricks_version: 16.4-LTS
             platforms: linux/amd64,linux/arm64
-
           - name: revo-devcontainer-slim
             dockerfile: ./src/revo-devcontainer-slim/Dockerfile
             tag: 3.11.11-slim
