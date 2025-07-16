@@ -72,7 +72,6 @@ jobs:
           build-args: |
             PYTHON_VERSION=${{ matrix.image.python_version }}
             DATABRICKS_VERSION=${{ matrix.image.databricks_version }}
-            UBUNTU_VERSION=${{ matrix.image.ubuntu_version }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }}:${{ matrix.image.tag }}
             ${{ matrix.image.additional_tags && format('ghcr.io/{0}/{1}:{2}', github.repository_owner, matrix.image.name, matrix.image.additional_tags) || '' }}
@@ -90,7 +89,4 @@ jobs:
           echo "  🐍 Python version: ${{ matrix.image.python_version }}"
           if [[ -n "${{ matrix.image.databricks_version }}" ]]; then
             echo "  🧱 Databricks version: ${{ matrix.image.databricks_version }}"
-          fi
-          if [[ -n "${{ matrix.image.ubuntu_version }}" ]]; then
-            echo "  🐧 Ubuntu version: ${{ matrix.image.ubuntu_version }}"
           fi

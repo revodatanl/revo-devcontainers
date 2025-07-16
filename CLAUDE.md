@@ -4,18 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This repository provides standardized development containers for RevoData projects. It contains three Docker container variants with **multi-architecture support** (AMD64 and ARM64) and **parameterized builds** for different versions:
+This repository provides standardized development containers for RevoData projects. It contains two Docker container variants with **multi-architecture support** (AMD64 and ARM64) and **parameterized builds** for different versions:
 
 1. **revo-devcontainer-slim** - Lightweight Python development environment
+
    - Python 3.11.11-slim variant
    - Python 3.12.4-slim variant (tagged as `latest`)
-   
+
 2. **revo-devcontainer-databricks** - Databricks Runtime based environment with enhanced shell
    - 15.4-LTS variant (Python 3.11.11)
    - 16.4-LTS variant (Python 3.12.4) - tagged as `latest`
    - Enhanced with zsh, powerline10k, fzf, and mcfly for better development experience
   
-
 ## Build System
 
 The project uses a comprehensive Makefile for container operations:
@@ -53,6 +53,7 @@ make shell CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS
 ### Multi-Architecture Support
 
 All containers are built for both `linux/amd64` and `linux/arm64` architectures, ensuring compatibility with:
+
 - Intel/AMD processors (x86_64)
 - Apple Silicon (M1/M2/M3) processors
 - ARM64 servers
@@ -79,6 +80,7 @@ All containers use multi-stage builds with parameterized base images:
 ### Enhanced Development Experience (Databricks)
 
 The Databricks containers include:
+
 - **Zsh** with powerline10k theme
 - **fzf** for fuzzy finding
 - **mcfly** for intelligent command history
@@ -124,10 +126,12 @@ The project uses GitHub Actions with three workflows:
 
 1. Modify Dockerfiles in respective `src/` directories
 2. Test locally using parameterized builds:
+
    ```bash
    make build CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4 DATABRICKS_VERSION=16.4-LTS
    make shell CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS
    ```
+
 3. CI automatically tests all container variants on pull requests
 4. After merge to main, semantic-release handles versioning
 5. CD workflow publishes all variants to `ghcr.io/revodatanl` with multi-architecture support
@@ -142,6 +146,31 @@ The project uses GitHub Actions with three workflows:
 - Enhanced shell experience available in Databricks containers
 - Latest tags: `16.4-LTS` (Databricks) and `3.12.4-slim` (Slim) are tagged as `latest`
 
+## Testing
+
+The repository includes comprehensive testing scripts for validating container functionality:
+
+### Test Scripts
+
+- **`.github/scripts/test-databricks-container.sh`** - Tests Databricks containers including:
+  - Python, pip, jq, curl, wget, git, make, nano, tree
+  - Databricks CLI, uv package manager
+  - Enhanced shell tools: zsh, fzf, mcfly, powerline10k
+  - Security and non-root user capability tests
+
+- **`.github/scripts/test-slim-container.sh`** - Tests slim containers including:
+  - Python execution, pip, git, make, nano, tree
+  - uv package manager
+  - Basic functionality and security tests
+
+### Running Tests Locally
+
+```bash
+# Test a specific container after building
+.github/scripts/test-databricks-container.sh revo-devcontainer-databricks 16.4-LTS
+.github/scripts/test-slim-container.sh revo-devcontainer-slim 3.12.4-slim
+```
+
 ## Adding New Versions
 
 To add a new Python version or runtime variant:
@@ -150,3 +179,4 @@ To add a new Python version or runtime variant:
 2. Add the new variant with appropriate build arguments
 3. Update the Makefile help text with the new variant
 4. Test locally using the parameterized build system
+5. Run the appropriate test script to validate functionality

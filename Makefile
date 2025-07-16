@@ -11,9 +11,6 @@ CONTAINER ?= revo-devcontainer-databricks
 TAG ?= 15.4-LTS
 # TAG ?= 16.4-LTS
 
-# Build parameters
-UBUNTU_VERSION ?= 24.04
-
 REGISTRY ?= ghcr.io/revodatanl
 NO_CACHE ?= false
 
@@ -31,7 +28,7 @@ ifeq ($(CONTAINER),revo-devcontainer-databricks)
     DOCKER_BUILD_ARGS += --build-arg PYTHON_VERSION=$(call get_python_version)
 else
     DOCKER_BUILD_ARGS += --build-arg PYTHON_VERSION=$(call get_python_version)
-    DOCKER_BUILD_ARGS += --build-arg UBUNTU_VERSION=$(UBUNTU_VERSION)
+
 endif
 
 # Derived variables
@@ -83,8 +80,6 @@ build:
 	fi
 	@if [ "$(CONTAINER)" = "revo-devcontainer-databricks" ]; then \
 		echo "Build parameters: PYTHON_VERSION=$(call get_python_version)"; \
-	else \
-		echo "Build parameters: PYTHON_VERSION=$(call get_python_version), UBUNTU_VERSION=$(UBUNTU_VERSION)"; \
 	fi
 	@if [ ! -d "$(CONTAINER_DIR)" ]; then \
 		echo "Error: Container directory $(CONTAINER_DIR) does not exist"; \
