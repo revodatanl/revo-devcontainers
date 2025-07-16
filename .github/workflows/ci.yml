@@ -79,85 +79,15 @@ jobs:
           
       - name: Test image-specific functionality
         run: |
-          echo "=========================================="
-          echo "Testing specific functionality for: ${{ matrix.image.name }}"
-          echo "=========================================="
-          
           case "${{ matrix.image.name }}" in
             "revo-devcontainer-databricks")
-              echo "🐍 Testing Databricks runtime specific tools..."
-              
-              echo "  → Testing Python..."
-              if docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} python --version > /dev/null 2>&1; then
-                echo "    ✅ Python found: $(docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} python --version)"
-              else
-                echo "    ❌ Python not found - REQUIRED FOR DATABRICKS RUNTIME"
-                exit 1
-              fi
-              
-              echo "  → Testing Databricks CLI..."
-              if docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} databricks --version > /dev/null 2>&1; then
-                echo "    ✅ Databricks CLI found: $(docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} databricks --version)"
-              else
-                echo "    ❌ Databricks CLI not found - REQUIRED FOR DATABRICKS RUNTIME"
-                exit 1
-              fi
-              
-              echo "  → Testing UV package manager..."
-              if docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} uv --version > /dev/null 2>&1; then
-                echo "    ✅ UV found: $(docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} uv --version)"
-              else
-                echo "    ❌ UV not found - REQUIRED FOR DATABRICKS RUNTIME"
-                exit 1
-              fi
-              
-              echo "  → Testing enhanced shell (zsh)..."
-              if docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} zsh --version > /dev/null 2>&1; then
-                echo "    ✅ Zsh found: $(docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} zsh --version)"
-              else
-                echo "    ❌ Zsh not found - REQUIRED FOR ENHANCED SHELL"
-                exit 1
-              fi
-              
-              echo "  → Testing Python import capabilities..."
-              if docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} python -c "import sys; print(f'Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')" > /dev/null 2>&1; then
-                echo "    ✅ Python import test successful"
-              else
-                echo "    ❌ Python import test failed - CRITICAL ERROR"
-                exit 1
-              fi
+              ./.github/scripts/test-databricks-container.sh "${{ matrix.image.name }}" "${{ matrix.image.tag }}"
               ;;
               
             "revo-devcontainer-slim")
-              echo "🪶 Testing slim container specific tools..."
-              
-              echo "  → Testing Python..."
-              if docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} python --version > /dev/null 2>&1; then
-                echo "    ✅ Python found: $(docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} python --version)"
-              else
-                echo "    ❌ Python not found - REQUIRED FOR SLIM CONTAINER"
-                exit 1
-              fi
-              
-              echo "  → Testing Python execution..."
-              if docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} python -c "print('Python working in slim container')" > /dev/null 2>&1; then
-                echo "    ✅ Python execution test successful"
-              else
-                echo "    ❌ Python execution test failed - CRITICAL ERROR"
-                exit 1
-              fi
-              
-              echo "  → Testing pip..."
-              if docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} which pip > /dev/null 2>&1; then
-                echo "    ✅ Pip found: $(docker run --rm ${{ matrix.image.name }}:${{ matrix.image.tag }} pip --version)"
-              else
-                echo "    ❌ Pip not found - REQUIRED FOR SLIM CONTAINER"
-                exit 1
-              fi
+              ./.github/scripts/test-slim-container.sh "${{ matrix.image.name }}" "${{ matrix.image.tag }}"
               ;;
           esac
-          
-          echo "=========================================="
 
       - name: Test container security
         run: |
