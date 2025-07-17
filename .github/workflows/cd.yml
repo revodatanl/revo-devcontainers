@@ -84,4 +84,3 @@ jobs:
           fi
           echo "  🏗️  Built for platforms: ${{ matrix.image.platforms }}"
           echo "  🐍 Python version: ${{ matrix.image.python_version }}"
-          fi
