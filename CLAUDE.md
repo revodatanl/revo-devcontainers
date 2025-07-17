@@ -24,11 +24,11 @@ The project uses a comprehensive Makefile for container operations:
 
 ```bash
 # Build specific container variants with parameters
-make build CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4 DATABRICKS_VERSION=16.4-LTS
+make build CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4
 make build CONTAINER=revo-devcontainer-slim TAG=3.12.4-slim PYTHON_VERSION=3.12.4
 
 # Build, tag and push (requires CR_PAT environment variable)
-make all CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4 DATABRICKS_VERSION=16.4-LTS
+make all CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4
 
 # Build for single architecture (default is multi-arch)
 make build MULTI_ARCH=false CONTAINER=revo-devcontainer-slim TAG=3.11.11-slim
@@ -70,7 +70,6 @@ All containers use multi-stage builds with parameterized base images:
 ### Parameterized Build Arguments
 
 - **PYTHON_VERSION**: Python version to install (e.g., `3.11.11`, `3.12.4`)
-- **DATABRICKS_VERSION**: Databricks Runtime version (e.g., `15.4-LTS`, `16.4-LTS`)
 
 ### Key Environment Variables
 
@@ -128,7 +127,7 @@ The project uses GitHub Actions with three workflows:
 2. Test locally using parameterized builds:
 
    ```bash
-   make build CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4 DATABRICKS_VERSION=16.4-LTS
+   make build CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4
    make shell CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS
    ```
 
