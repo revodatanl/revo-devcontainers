@@ -19,7 +19,6 @@ jobs:
             tag: 15.4-LTS
             context: ./src/revo-devcontainer-databricks
             python_version: 3.11.11
-            databricks_version: 15.4-LTS
             platforms: linux/amd64
 
           - name: revo-devcontainer-databricks
@@ -27,7 +26,6 @@ jobs:
             tag: 16.4-LTS
             context: ./src/revo-devcontainer-databricks
             python_version: 3.12.4
-            databricks_version: 16.4-LTS
             platforms: linux/amd64
 
           - name: revo-devcontainer-slim
@@ -58,7 +56,6 @@ jobs:
           file: ${{ matrix.image.dockerfile }}
           build-args: |
             PYTHON_VERSION=${{ matrix.image.python_version }}
-            DATABRICKS_VERSION=${{ matrix.image.databricks_version }}
           tags: ${{ matrix.image.name }}:${{ matrix.image.tag }}
           cache-from: type=gha,scope=${{ matrix.image.name }}-${{ matrix.image.tag }}
           cache-to: type=gha,mode=max,scope=${{ matrix.image.name }}-${{ matrix.image.tag }}

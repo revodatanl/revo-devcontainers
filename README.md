@@ -69,11 +69,11 @@ All containers are built for both `linux/amd64` and `linux/arm64` architectures,
 
 ```bash
 # Build specific container variants with parameters
-make build CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4 DATABRICKS_VERSION=16.4-LTS
+make build CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4
 make build CONTAINER=revo-devcontainer-slim TAG=3.12.4-slim PYTHON_VERSION=3.12.4
 
 # Build, tag and push (requires CR_PAT environment variable)
-make all CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4 DATABRICKS_VERSION=16.4-LTS
+make all CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4
 
 # Build for single architecture (default is multi-arch)
 make build MULTI_ARCH=false CONTAINER=revo-devcontainer-slim TAG=3.11.11-slim
