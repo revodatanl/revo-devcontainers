@@ -1,3 +1,17 @@
+# [1.4.0](https://github.com/revodatanl/revo-devcontainers/compare/v1.3.0...v1.4.0) (2025-07-25)
+
+
+### Bug Fixes
+
+* correct CD workflow build args ([8f02abf](https://github.com/revodatanl/revo-devcontainers/commit/8f02abf57c6b468b499d5afe8be8c710619b3a34))
+* correct CI workflow build args ([c6c4720](https://github.com/revodatanl/revo-devcontainers/commit/c6c4720d08bbef720b2fa8a1de115b7b9312d14d))
+
+
+### Features
+
+* remove slim devcontainer from repo ([2d18061](https://github.com/revodatanl/revo-devcontainers/commit/2d1806108de71da2cbbc550add2fd52b8fa1fc0e))
+* update the databricks devcontainer to a full ubuntu baseimage ([e46c1d5](https://github.com/revodatanl/revo-devcontainers/commit/e46c1d5d2c2142041ca708cdb6592ebc7556fd03))
+
 # [1.3.0](https://github.com/revodatanl/revo-devcontainers/compare/v1.2.0...v1.3.0) (2025-07-16)
 
 
