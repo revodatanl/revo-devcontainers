@@ -17,29 +17,10 @@ jobs:
         image:
           - name: revo-devcontainer-databricks
             dockerfile: ./src/revo-devcontainer-databricks/Dockerfile
-            tag: 15.4-LTS
-            context: ./src/revo-devcontainer-databricks
-            python_version: 3.11.11
-            platforms: linux/amd64,linux/arm64
-          - name: revo-devcontainer-databricks
-            dockerfile: ./src/revo-devcontainer-databricks/Dockerfile
-            tag: 16.4-LTS
+            tag: 24.04
             additional_tags: latest
             context: ./src/revo-devcontainer-databricks
-            python_version: 3.12.4
-            platforms: linux/amd64,linux/arm64
-          - name: revo-devcontainer-slim
-            dockerfile: ./src/revo-devcontainer-slim/Dockerfile
-            tag: 3.11.11-slim
-            context: ./src/revo-devcontainer-slim
-            python_version: 3.11.11
-            platforms: linux/amd64,linux/arm64
-          - name: revo-devcontainer-slim
-            dockerfile: ./src/revo-devcontainer-slim/Dockerfile
-            tag: 3.12.4-slim
-            additional_tags: latest
-            context: ./src/revo-devcontainer-slim
-            python_version: 3.12.4
+            base_image_version: 24.04
             platforms: linux/amd64,linux/arm64
 
     permissions:
