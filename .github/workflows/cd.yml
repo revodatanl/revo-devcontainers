@@ -49,7 +49,7 @@ jobs:
           platforms: ${{ matrix.image.platforms }}
           push: true
           build-args: |
-            PYTHON_VERSION=${{ matrix.image.python_version }}
+            BASE_IMAGE_VERSION=${{ matrix.image.base_image_version }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }}:${{ matrix.image.tag }}
             ${{ matrix.image.additional_tags && format('ghcr.io/{0}/{1}:{2}', github.repository_owner, matrix.image.name, matrix.image.additional_tags) || '' }}
@@ -64,4 +64,4 @@ jobs:
             echo "  📦 ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }}:${{ matrix.image.additional_tags }}"
           fi
           echo "  🏗️  Built for platforms: ${{ matrix.image.platforms }}"
-          echo "  🐍 Python version: ${{ matrix.image.python_version }}"
+          echo "  🐍 Base Image Version: ${{ matrix.image.base_image_version }}"
