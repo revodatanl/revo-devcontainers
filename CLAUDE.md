@@ -4,17 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This repository provides standardized development containers for RevoData projects. It contains two Docker container variants with **multi-architecture support** (AMD64 and ARM64) and **parameterized builds** for different versions:
+This repository provides a standardized development container for RevoData projects with **multi-architecture support** (AMD64 and ARM64):
 
-1. **revo-devcontainer-slim** - Lightweight Python development environment
+**revo-devcontainer-databricks** - Databricks Runtime based environment with enhanced shell
 
-   - Python 3.11.11-slim variant
-   - Python 3.12.4-slim variant (tagged as `latest`)
-
-2. **revo-devcontainer-databricks** - Databricks Runtime based environment with enhanced shell
-   - 15.4-LTS variant (Python 3.11.11)
-   - 16.4-LTS variant (Python 3.12.4) - tagged as `latest`
-   - Enhanced with zsh, powerline10k, fzf, and mcfly for better development experience
+- `latest` tag - Current production version
+- Python managed through uv (no direct Python installation)
+- Python version controlled by `.python-version` file in downstream repositories
+- Enhanced with zsh, powerline10k, fzf, and mcfly for better development experience
   
 ## Build System
 
@@ -22,33 +19,33 @@ The project uses a comprehensive Makefile for container operations:
 
 ### Core Build Commands
 
+The Makefile has been simplified to follow a cleaner pattern:
+
 ```bash
-# Build specific container variants with parameters
-make build CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4
-make build CONTAINER=revo-devcontainer-slim TAG=3.12.4-slim PYTHON_VERSION=3.12.4
+# Build with simplified parameters (defaults to latest tag)
+make build CONTAINER=revo-devcontainer-databricks TAG=latest
+make build CONTAINER=revo-devcontainer-databricks  # Uses default latest tag
 
 # Build, tag and push (requires CR_PAT environment variable)
-make all CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4
-
-# Build for single architecture (default is multi-arch)
-make build MULTI_ARCH=false CONTAINER=revo-devcontainer-slim TAG=3.11.11-slim
+make all CONTAINER=revo-devcontainer-databricks TAG=latest
+make all  # Uses default databricks container and latest tag
 
 # Login to GitHub Container Registry
 make login
 
-# Open shell in running container
-make shell CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS
+# Open shell in running container (uses consistent /bin/zsh)
+make shell CONTAINER=revo-devcontainer-databricks
 ```
 
-### Available Containers and Variants
+### Available Containers and Current Focus
 
-- **revo-devcontainer-slim**
-  - `3.11.11-slim` (Python 3.11.11)
-  - `3.12.4-slim` (Python 3.12.4) - also tagged as `latest`
-  
-- **revo-devcontainer-databricks**
-  - `15.4-LTS` (Python 3.11.11, Databricks Runtime 15.4-LTS)
-  - `16.4-LTS` (Python 3.12.4, Databricks Runtime 16.4-LTS) - also tagged as `latest`
+Currently focused on a single container type:
+
+- **revo-devcontainer-databricks** (default)
+  - `latest` tag - Current production version
+  - Enhanced with zsh, powerline10k, fzf, and mcfly for better development experience
+  - Python managed through uv (no direct Python installation)
+  - Multi-architecture support (AMD64 and ARM64)
 
 ### Multi-Architecture Support
 
@@ -60,21 +57,21 @@ All containers are built for both `linux/amd64` and `linux/arm64` architectures,
 
 ## Container Architecture
 
-### Multi-stage Dockerfiles
+### Dockerfile Structure
 
-All containers use multi-stage builds with parameterized base images:
+The Databricks container (`src/revo-devcontainer-databricks/Dockerfile`) is built on Ubuntu 24.04 and includes:
 
-- **Builder stage**: Installs all tools and dependencies
-- **Production stage**: Copies only necessary binaries for smaller final image
-
-### Parameterized Build Arguments
-
-- **PYTHON_VERSION**: Python version to install (e.g., `3.11.11`, `3.12.4`)
+- **Base Image**: `ubuntu:24.04` (parameterized via `BASE_IMAGE_VERSION`)
+- **Package Management**: uv for Python package management (no direct Python installation)
+- **Essential Tools**: git, make, nano, tree, jq, curl, wget, ssh, unzip
+- **Enhanced Shell**: zsh with powerline10k, fzf, mcfly, and persistent history
+- **Development Tools**: Databricks CLI
 
 ### Key Environment Variables
 
-- **Databricks Runtime**: `UV_PROJECT_ENVIRONMENT="/databricks/python3"`, `UV_SYSTEM_PYTHON=true`, `SHELL=/bin/zsh`
-- **All containers**: `EDITOR=nano`, `LANG=en_US.UTF-8`, `LC_ALL=en_US.UTF-8`
+- **Shell Configuration**: `SHELL=/bin/zsh`, `EDITOR=nano`
+- **Locale**: `LANG=en_US.UTF-8`, `LC_ALL=en_US.UTF-8`
+- **History Persistence**: Command history stored in `/commandhistory/.zsh_history`
 
 ### Enhanced Development Experience (Databricks)
 
@@ -93,14 +90,11 @@ The project uses GitHub Actions with three workflows:
 ### CI Workflow (.github/workflows/ci.yml)
 
 - Builds all container variants in parallel with multi-architecture support
-- Matrix strategy builds 4 variants:
-  - revo-devcontainer-databricks:15.4-LTS
-  - revo-devcontainer-databricks:16.4-LTS
-  - revo-devcontainer-slim:3.11.11-slim
-  - revo-devcontainer-slim:3.12.4-slim
+- Matrix strategy currently builds:
+  - revo-devcontainer-databricks:24.04 (based on Ubuntu 24.04)
 - Runs comprehensive tests including:
   - Basic functionality tests
-  - Image-specific tool verification (Databricks CLI, UV, Zsh for enhanced containers)
+  - Image-specific tool verification (Databricks CLI, uv, zsh for enhanced containers)
   - Security tests (non-root user capability)
   - Container metrics analysis
 - Uses Docker layer caching with scope-specific caching for efficiency
@@ -110,8 +104,7 @@ The project uses GitHub Actions with three workflows:
 - Publishes all variants to GitHub Container Registry
 - Multi-architecture builds for both AMD64 and ARM64
 - Automatic tagging:
-  - `16.4-LTS` Databricks container also tagged as `latest`
-  - `3.12.4-slim` container also tagged as `latest`
+  - Databricks container tagged as `latest`
 - Build arguments passed dynamically based on matrix configuration
 
 ### Release Process
@@ -127,8 +120,8 @@ The project uses GitHub Actions with three workflows:
 2. Test locally using parameterized builds:
 
    ```bash
-   make build CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS PYTHON_VERSION=3.12.4
-   make shell CONTAINER=revo-devcontainer-databricks TAG=16.4-LTS
+   make build CONTAINER=revo-devcontainer-databricks TAG=latest
+   make shell CONTAINER=revo-devcontainer-databricks TAG=latest
    ```
 
 3. CI automatically tests all container variants on pull requests
@@ -141,9 +134,9 @@ The project uses GitHub Actions with three workflows:
 - Registry: `ghcr.io/revodatanl`
 - Requires `CR_PAT` environment variable for registry operations
 - Multi-architecture support: All containers work on both Intel/AMD and Apple Silicon
-- Parameterized builds allow easy addition of new Python/runtime versions
 - Enhanced shell experience available in Databricks containers
-- Latest tags: `16.4-LTS` (Databricks) and `3.12.4-slim` (Slim) are tagged as `latest`
+- Latest tag: `latest` represents the current production version of the databricks container
+- **Python Version Management**: Python version is controlled by the `.python-version` file in downstream repositories using this container. Users are responsible for ensuring the Python version matches their intended Databricks runtime requirements.
 
 ## Testing
 
@@ -152,23 +145,27 @@ The repository includes comprehensive testing scripts for validating container f
 ### Test Scripts
 
 - **`.github/scripts/test-databricks-container.sh`** - Tests Databricks containers including:
-  - Python, pip, jq, curl, wget, git, make, nano, tree
-  - Databricks CLI, uv package manager
+  - uv package manager and uvx functionality
+  - Python availability through uv virtual environments (no direct Python)
+  - uv project workflow with Python version specification
+  - Essential tools: jq, curl, wget, git, make, nano, tree
+  - Databricks CLI
   - Enhanced shell tools: zsh, fzf, mcfly, powerline10k
-  - Security and non-root user capability tests
-
-- **`.github/scripts/test-slim-container.sh`** - Tests slim containers including:
-  - Python execution, pip, git, make, nano, tree
-  - uv package manager
-  - Basic functionality and security tests
+  - Environment configuration and history persistence
+  - Security and workspace permissions
 
 ### Running Tests Locally
 
 ```bash
-# Test a specific container after building
-.github/scripts/test-databricks-container.sh revo-devcontainer-databricks 16.4-LTS
-.github/scripts/test-slim-container.sh revo-devcontainer-slim 3.12.4-slim
+# Test the databricks container (note: now requires Python version parameter)
+.github/scripts/test-databricks-container.sh revo-devcontainer-databricks latest 3.12.4
 ```
+
+### Key Testing Changes
+
+- **Python Testing**: No longer tests direct Python installation; instead validates Python accessibility through uv
+- **uv Workflow**: Tests complete uv project workflow including .python-version specification
+- **Package Management**: Validates package installation and import capabilities via uv virtual environments
 
 ## Adding New Versions
 

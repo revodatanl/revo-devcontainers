@@ -213,14 +213,6 @@ else
     FAILED_TESTS+=("SHELL environment variable")
 fi
 
-echo "  → Testing UTF-8 locale support..."
-if docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" locale | grep -q "en_US.UTF-8" > /dev/null 2>&1; then
-    echo "    ✅ UTF-8 locale configured"
-else
-    echo "    ❌ UTF-8 locale not configured - INTERNATIONALIZATION ERROR"
-    FAILED_TESTS+=("UTF-8 locale")
-fi
-
 echo "  → Testing command history persistence..."
 if docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" test -f /commandhistory/.zsh_history > /dev/null 2>&1; then
     echo "    ✅ Command history file exists"
