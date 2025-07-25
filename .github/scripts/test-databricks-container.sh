@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # Test script for revo-devcontainer-databricks functionality
-# Parameters: CONTAINER_NAME CONTAINER_TAG
+# Parameters: CONTAINER_NAME CONTAINER_TAG PYTHON_VERSION
 
 CONTAINER_NAME="$1"
 CONTAINER_TAG="$2"
+PYTHON_VERSION="$3"
 
-if [ -z "$CONTAINER_NAME" ] || [ -z "$CONTAINER_TAG" ]; then
-    echo "Usage: $0 <container_name> <container_tag>"
+if [ -z "$CONTAINER_NAME" ] || [ -z "$CONTAINER_TAG" ] || [ -z "$PYTHON_VERSION" ]; then
+    echo "Usage: $0 <container_name> <container_tag> <python_version>"
     exit 1
 fi
 
@@ -17,46 +18,6 @@ echo "=========================================="
 
 echo "🐍 Testing Databricks runtime specific tools..."
 FAILED_TESTS=()
-
-echo "  → Testing Python..."
-if docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" python --version > /dev/null 2>&1; then
-    echo "    ✅ Python found: $(docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" python --version)"
-else
-    echo "    ❌ Python not found - REQUIRED FOR DATABRICKS RUNTIME"
-    FAILED_TESTS+=("Python")
-fi
-
-echo "  → Testing pip..."
-if docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" which pip > /dev/null 2>&1; then
-    echo "    ✅ Pip found: $(docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" pip --version)"
-else
-    echo "    ❌ Pip not found - REQUIRED FOR DATABRICKS RUNTIME"
-    FAILED_TESTS+=("Pip")
-fi
-
-echo "  → Testing Python import capabilities..."
-if docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" python -c "import sys; print(f'Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')" > /dev/null 2>&1; then
-    echo "    ✅ Python import test successful"
-else
-    echo "    ❌ Python import test failed - CRITICAL ERROR"
-    FAILED_TESTS+=("Python imports")
-fi
-
-echo "  → Testing jq..."
-if docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" jq --version > /dev/null 2>&1; then
-    echo "    ✅ jq found: $(docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" jq --version)"
-else
-    echo "    ❌ jq not found - REQUIRED FOR DATABRICKS RUNTIME"
-    FAILED_TESTS+=("jq")
-fi
-
-echo "  → Testing jq JSON processing..."
-if docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" sh -c 'echo "{\"test\": \"value\"}" | jq .test' > /dev/null 2>&1; then
-    echo "    ✅ jq JSON processing test successful"
-else
-    echo "    ❌ jq JSON processing test failed - CRITICAL ERROR"
-    FAILED_TESTS+=("jq JSON processing")
-fi
 
 echo "  → Testing uv..."
 if docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" uv --version > /dev/null 2>&1; then
@@ -74,19 +35,54 @@ else
     FAILED_TESTS+=("uvx")
 fi
 
-echo "  → Testing uv project workflow..."
-if docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" bash -c "
+echo "  → Testing uv project workflow with Python version specification..."
+if docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" bash -c '
+    echo "$PYTHON_VERSION" > .python-version &&
     uv init test-project &&
     cd test-project &&
     uv add ruff &&
     source .venv/bin/activate &&
-    ruff --version &&
-    echo 'uv project workflow successful'
-" > /dev/null 2>&1; then
+    echo "Testing package availability..." &&
+    uv pip list | grep -E "ruff" &&
+    python -c "import ruff; print(\"ruff available\")" &&
+    echo "uv workflow successful"
+' > /dev/null 2>&1; then
     echo "    ✅ uv project workflow working"
 else
-    echo "    ❌ uv project workflow failed - REQUIRED FOR DATABRICKS RUNTIME"
+    echo "    ❌ uv project workflow failed - CRITICAL ERROR"
     FAILED_TESTS+=("uv project workflow")
+fi
+
+echo "  → Testing Python availability through uv..."
+PYTHON_VERSION_OUTPUT=$(docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" bash -c "
+    echo '$PYTHON_VERSION' > .python-version &&
+    uv init test-project &&
+    cd test-project &&
+    uv sync &&
+    source .venv/bin/activate &&
+    python --version
+" 2>/dev/null)
+if [ $? -eq 0 ]; then
+    echo "    ✅ Python test successful with version: $PYTHON_VERSION_OUTPUT"
+else
+    echo "    ❌ Python not accessible through uv - REQUIRED FOR DATABRICKS RUNTIME"
+    FAILED_TESTS+=("Python via uv")
+fi
+
+echo "  → Testing jq..."
+if docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" jq --version > /dev/null 2>&1; then
+    echo "    ✅ jq found: $(docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" jq --version)"
+else
+    echo "    ❌ jq not found - REQUIRED FOR DATABRICKS RUNTIME"
+    FAILED_TESTS+=("jq")
+fi
+
+echo "  → Testing jq JSON processing..."
+if docker run --rm "$CONTAINER_NAME:$CONTAINER_TAG" sh -c 'echo "{\"test\": \"value\"}" | jq .test' > /dev/null 2>&1; then
+    echo "    ✅ jq JSON processing test successful"
+else
+    echo "    ❌ jq JSON processing test failed - CRITICAL ERROR"
+    FAILED_TESTS+=("jq JSON processing")
 fi
 
 echo "  → Testing Databricks CLI..."

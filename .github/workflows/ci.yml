@@ -16,31 +16,11 @@ jobs:
         image:
           - name: revo-devcontainer-databricks
             dockerfile: ./src/revo-devcontainer-databricks/Dockerfile
-            tag: 15.4-LTS
+            tag: 24.04
             context: ./src/revo-devcontainer-databricks
-            python_version: 3.11.11
+            base_image_version: 24.04
             platforms: linux/amd64
-
-          - name: revo-devcontainer-databricks
-            dockerfile: ./src/revo-devcontainer-databricks/Dockerfile
-            tag: 16.4-LTS
-            context: ./src/revo-devcontainer-databricks
-            python_version: 3.12.4
-            platforms: linux/amd64
-
-          - name: revo-devcontainer-slim
-            dockerfile: ./src/revo-devcontainer-slim/Dockerfile
-            tag: "3.11.11-slim"
-            context: ./src/revo-devcontainer-slim
-            python_version: 3.11.11
-            platforms: linux/amd64
-
-          - name: revo-devcontainer-slim
-            dockerfile: ./src/revo-devcontainer-slim/Dockerfile
-            tag: 3.12.4-slim
-            context: ./src/revo-devcontainer-slim
-            python_version: 3.12.4
-            platforms: linux/amd64
+            python_version: 3.11.11 # only needed for CI testing
 
     steps:
       - name: Checkout repository
@@ -55,7 +35,7 @@ jobs:
           context: ${{ matrix.image.context }}
           file: ${{ matrix.image.dockerfile }}
           build-args: |
-            PYTHON_VERSION=${{ matrix.image.python_version }}
+            BASE_IMAGE_VERSION=${{ matrix.image.python_version }}
           tags: ${{ matrix.image.name }}:${{ matrix.image.tag }}
           cache-from: type=gha,scope=${{ matrix.image.name }}-${{ matrix.image.tag }}
           cache-to: type=gha,mode=max,scope=${{ matrix.image.name }}-${{ matrix.image.tag }}
@@ -77,11 +57,7 @@ jobs:
         run: |
           case "${{ matrix.image.name }}" in
             "revo-devcontainer-databricks")
-              ./.github/scripts/test-databricks-container.sh "${{ matrix.image.name }}" "${{ matrix.image.tag }}"
-              ;;
-              
-            "revo-devcontainer-slim")
-              ./.github/scripts/test-slim-container.sh "${{ matrix.image.name }}" "${{ matrix.image.tag }}"
+              ./.github/scripts/test-databricks-container.sh "${{ matrix.image.name }}" "${{ matrix.image.tag }}" "${{ matrix.image.python_version }}"
               ;;
           esac
 
