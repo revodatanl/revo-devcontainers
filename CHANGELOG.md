@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/revodatanl/revo-devcontainers/compare/v1.4.0...v1.4.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* locale issue ([3d7e476](https://github.com/revodatanl/revo-devcontainers/commit/3d7e476bc2d0b8ce0882e407905105e7f7af9d59))
+
 # [1.4.0](https://github.com/revodatanl/revo-devcontainers/compare/v1.3.0...v1.4.0) (2025-07-25)
 
 
