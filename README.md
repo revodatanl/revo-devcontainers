@@ -6,6 +6,10 @@
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
+[![CI](https://github.com/revodatanl/revo-devcontainers/actions/workflows/ci.yml/badge.svg)](https://github.com/revodatanl/revo-devcontainers/actions/workflows/ci.yml)
+[![CD](https://github.com/revodatanl/revo-devcontainers/actions/workflows/cd.yml/badge.svg)](https://github.com/revodatanl/revo-devcontainers/actions/workflows/cd.yml)
+[![Semantic Release](https://github.com/revodatanl/revo-devcontainers/actions/workflows/semantic-release.yml/badge.svg)](https://github.com/revodatanl/revo-devcontainers/actions/workflows/semantic-release.yml)
+
 This repository provides a standardized, ready-to-use development container for RevoData projects with **multi-architecture support** (AMD64 and ARM64).
 
 ## 🛠️ Development Environment
