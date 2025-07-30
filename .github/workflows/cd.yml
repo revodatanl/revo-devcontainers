@@ -65,3 +65,37 @@ jobs:
           fi
           echo "  🏗️  Built for platforms: ${{ matrix.image.platforms }}"
           echo "  🐍 Base Image Version: ${{ matrix.image.base_image_version }}"
+  
+  # Tests run post-build to ensure container is built correctly
+  # since docker buildx only supports building and pushing images simultaneously
+  functionality-tests:
+    name: Test Container Functionality
+    runs-on: ubuntu-latest
+    needs: cd
+    if: ${{ success() }}
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - name: revo-devcontainer-databricks
+            tag: latest
+            python_version: 3.11.11  # only needed for CI testing
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull ${{ matrix.image.name }} from registry
+        run: |
+          docker pull ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }}:${{ matrix.image.tag }}
+
+      - name: Test Databricks Container
+        run: |
+          .github/scripts/test-databricks-container.sh ghcr.io/${{ github.repository_owner }}/${{ matrix.image.name }} ${{ matrix.image.tag }} ${{ matrix.image.python_version }}

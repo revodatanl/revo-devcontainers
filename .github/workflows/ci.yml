@@ -20,7 +20,7 @@ jobs:
             context: ./src/revo-devcontainer-databricks
             base_image_version: 24.04
             platforms: linux/amd64
-            python_version: 3.11.11 # only needed for CI testing
+            python_version: 3.11.11  # only needed for CI testing
 
     steps:
       - name: Checkout repository
