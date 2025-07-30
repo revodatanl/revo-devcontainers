@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/revodatanl/revo-devcontainers/compare/v1.4.1...v1.4.2) (2025-07-30)
+
+
+### Bug Fixes
+
+* add post-build validation ([fa2d57e](https://github.com/revodatanl/revo-devcontainers/commit/fa2d57e9f04ff74392b9a1c8583cf00b7fe100f9))
+
 ## [1.4.1](https://github.com/revodatanl/revo-devcontainers/compare/v1.4.0...v1.4.1) (2025-07-30)
 
 
