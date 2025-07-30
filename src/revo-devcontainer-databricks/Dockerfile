@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fzf \
     git \
     jq \
+    locales \
     make \
     nano \
     ssh \
@@ -33,6 +34,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zsh \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Generate en_US.UTF-8 locale
+RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
 # Install Databricks CLI
 RUN curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
